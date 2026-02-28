@@ -3,20 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Find the Sparkly Star!</title>
+  <title>Magic Spell Gender Reveal 🪄</title>
   <style>
     :root{
       --bg1:#fff0f8;
       --bg2:#eef7ff;
       --ink:#1f2937;
-      --card:rgba(255,255,255,.85);
+      --card:rgba(255,255,255,.86);
       --shadow: 0 14px 34px rgba(0,0,0,.12);
       --radius: 22px;
-      --pink1:#ff4d8d;
-      --pink2:#ff85b3;
+
+      --pink:#ff4d8d;
       --lav:#c084fc;
       --mint:#5eead4;
       --sun:#fbbf24;
+      --night:#111827;
     }
     *{box-sizing:border-box}
     body{
@@ -33,6 +34,7 @@
       overflow:hidden;
     }
     .confetti{ position:fixed; inset:0; pointer-events:none; display:none; }
+
     .wrap{ width:min(980px, 92vw); padding:20px; }
     .card{
       background:var(--card);
@@ -42,351 +44,71 @@
       border-radius:var(--radius);
       padding:20px;
     }
-    .top{
-      display:flex;
-      gap:16px;
-      align-items:flex-start;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
     h1{
       margin:0;
       font-size:clamp(22px, 3.2vw, 36px);
       letter-spacing:.2px;
     }
-    .sub{
-      margin:6px 0 0;
-      font-size:14px;
-      opacity:.85;
-      line-height:1.3;
+    .sub{ margin:6px 0 0; font-size:14px; opacity:.86; line-height:1.35; }
+
+    .row{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:16px;
+      align-items:stretch;
     }
-    .btns{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    button{
-      border:0;
-      border-radius:999px;
-      padding:10px 14px;
-      background:#111827;
-      color:white;
-      font-weight:700;
+    @media (max-width:860px){ .row{ grid-template-columns: 1fr; } }
+
+    .panel{
+      border-radius:18px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#fff;
+      box-shadow: 0 10px 22px rgba(0,0,0,.08);
+      padding:16px;
+    }
+
+    .ingredients{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:12px;
+      margin-top:10px;
+    }
+    @media (max-width:480px){ .ingredients{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+
+    .chip{
+      position:relative;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.08);
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,.8), transparent 40%),
+        linear-gradient(160deg, rgba(255,77,141,.18), rgba(192,132,252,.14), rgba(94,234,212,.14));
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+      padding:14px 12px;
       cursor:pointer;
-      box-shadow:0 10px 22px rgba(17,24,39,.22);
-      transition:transform .06s ease;
-    }
-    button:active{ transform: translateY(1px) }
-    .mini{
-      border-radius:999px;
-      padding:10px 12px;
-      background:#ffffffb8;
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:0 6px 14px rgba(0,0,0,.06);
-      font-size:14px;
-    }
-    .meterWrap{
-      margin-top:14px;
+      user-select:none;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-    .meter{
-      flex: 1 1 420px;
-      height:12px;
-      border-radius:999px;
-      background:rgba(17,24,39,.08);
-      overflow:hidden;
-      border:1px solid rgba(0,0,0,.06);
-    }
-    .meter > div{
-      height:100%;
-      width:0%;
-      border-radius:999px;
-      background: linear-gradient(90deg, var(--pink1), var(--lav), var(--mint), var(--sun));
-      transition: width .2s ease;
-    }
-    .tries{
-      font-weight:800;
-      font-size:14px;
-      opacity:.85;
-      white-space:nowrap;
-    }
-    .grid{
-      margin-top:16px;
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap:14px;
-    }
-    @media (max-width:720px){ .grid{ grid-template-columns: repeat(3, minmax(0,1fr)); } }
-    @media (max-width:480px){ .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
-
-    .cloud{
-      position:relative;
-      aspect-ratio: 1/1;
-      border-radius: 26px;
-      cursor:pointer;
-      user-select:none;
-      border:1px solid rgba(0,0,0,.08);
-      box-shadow:0 10px 22px rgba(0,0,0,.10);
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.95), rgba(255,255,255,.65) 55%, rgba(255,255,255,.35) 100%),
-        linear-gradient(160deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
-      overflow:hidden;
-      display:grid;
-      place-items:center;
+      gap:10px;
       transition: transform .08s ease;
     }
-    .cloud:active{ transform: scale(.99) }
-    .emoji{
-      font-size: clamp(34px, 6vw, 58px);
-      filter: drop-shadow(0 8px 10px rgba(0,0,0,.10));
-    }
-    .tag{
-      position:absolute;
-      bottom:10px;
-      left:50%;
-      transform: translateX(-50%);
-      font-weight:900;
-      font-size:13px;
-      padding:6px 10px;
-      border-radius:999px;
-      background:#ffffffc4;
-      border:1px solid rgba(0,0,0,.08);
-    }
-    .sparkle{
-      position:absolute;
-      inset:-30%;
+    .chip:active{ transform: scale(.99) }
+    .chip .emoji{ font-size:28px; filter: drop-shadow(0 8px 10px rgba(0,0,0,.10)); }
+    .chip .name{ font-weight:900; font-size:14px; }
+    .chip .tap{ font-size:12px; opacity:.75; font-weight:800; }
+
+    .cauldronWrap{
+      height:100%;
+      display:grid;
+      place-items:center;
+      position:relative;
+      overflow:hidden;
+      border-radius:16px;
       background:
-        radial-gradient(circle at 25% 20%, rgba(255,255,255,.7), transparent 40%),
-        radial-gradient(circle at 70% 45%, rgba(255,255,255,.35), transparent 55%);
-      pointer-events:none;
+        radial-gradient(500px 260px at 50% 65%, rgba(255,77,141,.18), transparent 65%),
+        radial-gradient(520px 260px at 40% 55%, rgba(192,132,252,.16), transparent 60%),
+        linear-gradient(180deg, #ffffff, #fff7fb);
     }
-    .opened{
-      cursor:default;
-      animation: pop .22s ease-out forwards;
-    }
-    @keyframes pop{
-      0%{ transform:scale(1) }
-      70%{ transform:scale(1.06) }
-      100%{ transform:scale(0); opacity:0 }
-    }
-    .reveal{
-      margin-top:16px;
-      padding:18px;
-      border-radius:var(--radius);
-      background:#fff;
-      border:1px solid rgba(0,0,0,.08);
-      box-shadow: 0 12px 26px rgba(0,0,0,.10);
-      display:none;
-      text-align:center;
-    }
-    .reveal h2{
-      margin:0;
-      font-size: clamp(28px, 5vw, 54px);
-      color: #db2777;
-      text-shadow: 0 8px 18px rgba(219,39,119,.18);
-    }
-    .reveal p{
-      margin:8px 0 0;
-      font-size:16px;
-      opacity:.9;
-      line-height:1.35;
-    }
-    .bigBadge{
-      margin:12px auto 0;
-      display:inline-flex;
-      gap:10px;
-      align-items:center;
-      padding:10px 14px;
-      border-radius:999px;
-      font-weight:900;
-      background: linear-gradient(90deg, rgba(255,77,141,.18), rgba(192,132,252,.18), rgba(94,234,212,.18));
-      border:1px solid rgba(0,0,0,.08);
-    }
-    .tiny{
-      margin-top:10px;
-      font-size:12px;
-      opacity:.65;
-    }
-  </style>
-</head>
-<body>
-  <canvas class="confetti" id="confetti"></canvas>
-
-  <div class="wrap">
-    <div class="card">
-      <div class="top">
-        <div>
-          <h1>Find the Sparkly Star ⭐</h1>
-          <div class="sub">
-            Tap the fluffy clouds until you find the hidden <b>sparkly star</b> ✨<br/>
-            (A tiny secret is waiting inside!)
-          </div>
-        </div>
-        <div class="btns">
-          <div class="mini" id="hint">Hint: One cloud hides the ⭐</div>
-          <button id="resetBtn">Play Again</button>
-        </div>
-      </div>
-
-      <div class="meterWrap">
-        <div class="meter" aria-label="progress">
-          <div id="bar"></div>
-        </div>
-        <div class="tries" id="tries">Clouds opened: 0</div>
-      </div>
-
-      <div class="grid" id="grid"></div>
-
-      <div class="reveal" id="revealBox">
-        <h2>It’s a Girl! 💖</h2>
-        <p>Yay!! A sweet baby girl is on the way! 🎀👶✨</p>
-        <div class="bigBadge">You found the star ⭐ + unlocked the secret!</div>
-        <div class="tiny">Tip: send this link to your cousins and let them play!</div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const grid = document.getElementById('grid');
-    const revealBox = document.getElementById('revealBox');
-    const resetBtn = document.getElementById('resetBtn');
-    const triesEl = document.getElementById('tries');
-    const bar = document.getElementById('bar');
-
-    const CLOUDS = 12;
-    let target = 0;
-    let opened = 0;
-    let gameDone = false;
-
-    const cloudEmojis = ["☁️","🌤️","☁️","🌥️","☁️","🌦️","☁️","🌤️","☁️","🌥️","☁️","🌤️"];
-
-    function build(){
-      grid.innerHTML = "";
-      revealBox.style.display = "none";
-      opened = 0;
-      gameDone = false;
-      updateUI();
-      target = Math.floor(Math.random() * CLOUDS);
-
-      for(let i=0;i<CLOUDS;i++){
-        const tile = document.createElement('div');
-        tile.className = "cloud";
-        tile.setAttribute("role","button");
-        tile.setAttribute("aria-label","Cloud");
-
-        const sparkle = document.createElement('div');
-        sparkle.className = "sparkle";
-
-        const emoji = document.createElement('div');
-        emoji.className = "emoji";
-        emoji.textContent = cloudEmojis[i % cloudEmojis.length];
-
-        const tag = document.createElement('div');
-        tag.className = "tag";
-        tag.textContent = "TAP ME!";
-
-        tile.appendChild(sparkle);
-        tile.appendChild(emoji);
-        tile.appendChild(tag);
-
-        tile.addEventListener('click', () => openCloud(tile, i), { once:true });
-
-        grid.appendChild(tile);
-      }
-    }
-
-    function updateUI(){
-      triesEl.textContent = `Clouds opened: ${opened}`;
-      const pct = Math.min(100, (opened / CLOUDS) * 100);
-      bar.style.width = pct + "%";
-    }
-
-    function openCloud(tile, idx){
-      if(gameDone) return;
-
-      opened++;
-      updateUI();
-
-      if(idx === target){
-        gameDone = true;
-        tile.style.cursor = "default";
-        tile.querySelector(".emoji").textContent = "⭐";
-        tile.querySelector(".tag").textContent = "YOU FOUND IT!";
-        setTimeout(() => {
-          revealBox.style.display = "block";
-          launchConfetti();
-          [...document.querySelectorAll('.cloud')].forEach((c, j) => {
-            if(j !== idx) c.style.opacity = "0.55";
-          });
-        }, 250);
-        return;
-      }
-
-      tile.classList.add("opened");
-    }
-
-    // Confetti
-    const canvas = document.getElementById("confetti");
-    const ctx = canvas.getContext("2d");
-    let raf = null;
-
-    function resizeCanvas(){
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener("resize", resizeCanvas);
-
-    function launchConfetti(){
-      resizeCanvas();
-      canvas.style.display = "block";
-
-      const colors = ["#ff4d8d","#ff85b3","#ffd1e6","#c084fc","#5eead4","#fbbf24"];
-      const pieces = Array.from({length: 170}, () => ({
-        x: Math.random()*canvas.width,
-        y: -20 - Math.random()*canvas.height*0.25,
-        w: 6 + Math.random()*8,
-        h: 4 + Math.random()*7,
-        c: colors[Math.floor(Math.random()*colors.length)],
-        vx: -2.2 + Math.random()*4.4,
-        vy: 2.0 + Math.random()*5.0,
-        rot: Math.random()*Math.PI,
-        vr: -0.12 + Math.random()*0.24
-      }));
-
-      const start = performance.now();
-      const DURATION = 2600;
-
-      if(raf) cancelAnimationFrame(raf);
-
-      function frame(t){
-        const elapsed = t - start;
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-
-        for(const p of pieces){
-          p.x += p.vx;
-          p.y += p.vy;
-          p.rot += p.vr;
-          p.vy += 0.03;
-
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.rot);
-          ctx.fillStyle = p.c;
-          ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-          ctx.restore();
-        }
-
-        if(elapsed < DURATION){
-          raf = requestAnimationFrame(frame);
-        }else{
-          canvas.style.display = "none";
-        }
-      }
-      raf = requestAnimationFrame(frame);
-    }
-
-    resetBtn.addEventListener('click', build);
-    build();
-  </script>
-</body>
-</html>
+    .cauldron{
+      width:m
